@@ -53,7 +53,7 @@ def calcBOREfinal(groups):
 #Calculates the final score for an EE event
 def calcEEfinal(groups):
     for group in groups:
-        group.final = 100 * (((group.written/60) + (group.oral/40))/2)
+        group.final = 100 * (((group.written/100) + (group.oral/100))/2)
 #Takes in a list of events, then sorts it by the final attribute, and outputs the list.
 def rankevent(groups):
     ranking = []
