@@ -1,59 +1,48 @@
 
-
 import pandas as pd
 df = pd.read_excel("https://docs.google.com/spreadsheets/d/e/2PACX-1vSAH0q4IKYBmA46IT2IbrjpuxwwmOlKUcAZSaaFWa_iiv0Iv6sER08JDWAy0wJ8mjdmobE9OORIyjft/pub?output=xlsx")
-class BOREGroup():
-    def __init__(self, member1, oral, written, groupnumber, eventtype):
+teamnumber = 2
+studentid = 3
+class Group():
+    def __init__(self, member1, score1, score2, groupnumber, eventtype):
         self.members = [member1]
         self.groupnumber = groupnumber
-        self.written = written
-        self.oral = oral
+        self.score1 = score1
+        self.score2 = score2
         self.eventtype = eventtype
-class EEGroup():
-    def __init__(self, member1, oral, written, groupnumber, eventtype):
-        self.members = [member1]
-        self.groupnumber = groupnumber
-        self.written = written
-        self.oral = oral
-        self.eventtype = eventtype
-#Returns a list of all competitors for a given event for any event in the BORE category
-def getBOREevents(event):
+
+#Returns a list of all competitors for a given event for any event
+#PARAMETERS
+#event - string representing the abbreviation matching the event
+#eventindex - integer matching the column in the spreadsheet that contains the event abbreviation
+#score1 - integer matching the column in the spreadsheet where the first score is located
+#score2 - integer matching the column in the spreadhseet where the second score is located
+#You can access  the scores of a given group using group.score1 and groupe.score2
+#This function requires the group class above.
+
+def getevents(event,eventindex,score1=-1,score2=-1):
     #valid = ["BOR", "BMOR", "HTOR", "FOR", "SEOR"]
     groups = []
-
     for i in range(len(df.index)):
-        if (df.iat[i,8]) == event:
+        if (df.iat[i,eventindex]) == event:
             ingroup = False
             #print("index: " + str(i))
             for group in groups:
-                if group.groupnumber == df.iat[i,2]:
-                    group.members.append(df.iat[i,3])
+                if group.groupnumber == df.iat[i,teamnumber]:
+                    group.members.append(df.iat[i,studentid])
                     ingroup = True
             if not ingroup:
-                groups.append(BOREGroup(df.iat[i,3],df.iat[i,19],df.iat[i,18],df.iat[i,2],event))
+                groups.append(Group(df.iat[i,studentid],df.iat[i,score1],df.iat[i,score2],df.iat[i,teamnumber],event))
     return groups
-#Returns a list of all competitors for a given event for any event in the EE category
-def getEEevents(event):
-    groups = []
-    notlast = False
-    for i in range(len(df.index)):
-        if (df.iat[i,10]) == event:
-            ingroup = False
-            for group in groups:
-                if group.groupnumber == df.iat[i,2]:
-                    group.members.append(df.iat[i,3])
-                    ingroup = True
-            if not ingroup:
-                groups.append(EEGroup(df.iat[i,3],df.iat[i,23],df.iat[i,22],df.iat[i,2],event))
-    return groups
+
 #Calculates the final score for a bore event
 def calcBOREfinal(groups):
     for group in groups:
-        group.final = group.written + group.oral
+        group.final = group.score1 + group.score2
 #Calculates the final score for an EE event
 def calcEEfinal(groups):
     for group in groups:
-        group.final = 100 * (((group.written/100) + (group.oral/100))/2)
+        group.final = 100 * (((group.score1/100) + (group.score2/100))/2)
 #Takes in a list of events, then sorts it by the final attribute, and outputs the list.
 def rankevent(groups):
     ranking = []
@@ -81,10 +70,10 @@ def printranking(groups,event):
 boreevents = ["BOR", "BMOR", "HTOR", "FOR", "SEOR"]
 eeevents = ["EIP","ESB","EIB","IBP","EGB","EFB"]
 for event in boreevents:
-    eventlist = getBOREevents(event)
+    eventlist = getevents(event,8,18,19)
     calcBOREfinal(eventlist)
     printranking(rankevent(eventlist),event)
 for event in eeevents:
-    eventlist = getEEevents(event)
+    eventlist = getevents(event,10,22,23)
     calcEEfinal(eventlist)
     printranking(rankevent(eventlist),event)
