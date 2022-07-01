@@ -8,7 +8,7 @@ def checkdupeevents(df):
     good = True
     for i in range(len(df.index)):
         n = 0
-        for j in range(4,13):
+        for j in range(eventindex1,eventindex2+1):
             if isinstance(df.iat[i,j],str):
                 n = n + 1
         if n == 0:
