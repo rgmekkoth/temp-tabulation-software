@@ -1,4 +1,3 @@
-
 import pandas as pd
 df = pd.read_excel("https://docs.google.com/spreadsheets/d/e/2PACX-1vSAH0q4IKYBmA46IT2IbrjpuxwwmOlKUcAZSaaFWa_iiv0Iv6sER08JDWAy0wJ8mjdmobE9OORIyjft/pub?output=xlsx")
 teamnumber = 2
@@ -40,9 +39,15 @@ def calcBOREfinal(groups):
     for group in groups:
         group.final = group.score1 + group.score2
 #Calculates the final score for an EE event
-def calcEEfinal(groups):
+def calcEEfinalone(groups):
     for group in groups:
-        group.final = 100 * (((group.score1/100) + (group.score2/100))/2)
+        group.final = 100 * (group.score1 + group.score2)/170
+def calcEEfinaltwo(groups):
+    for group in groups:
+        group.final = (group.score1 + group.score2)
+def calcEEfinalthree(groups):
+    for group in groups:
+        group.final = 100 * (group.score1 + group.score2)/180
 #Takes in a list of events, then sorts it by the final attribute, and outputs the list.
 def rankevent(groups):
     ranking = []
@@ -68,12 +73,22 @@ def printranking(groups,event):
 
 
 boreevents = ["BOR", "BMOR", "HTOR", "FOR", "SEOR"]
-eeevents = ["EIP","ESB","EIB","IBP","EGB","EFB"]
+eeeventsone = ["EIP","EIB","IBP"]
+eeeventstwo = ["EBG","EFB","EIB"]
+eeeventsthree = ["ESB"]
 for event in boreevents:
     eventlist = getevents(event,8,18,19)
     calcBOREfinal(eventlist)
     printranking(rankevent(eventlist),event)
-for event in eeevents:
+for event in eeeventsone:
     eventlist = getevents(event,10,22,23)
-    calcEEfinal(eventlist)
+    calcEEfinalone(eventlist)
+    printranking(rankevent(eventlist),event)
+for event in eeeventstwo:
+    eventlist = getevents(event,10,22,23)
+    calcEEfinaltwo(eventlist)
+    printranking(rankevent(eventlist),event)
+for event in eeeventsthree:
+    eventlist = getevents(event,10,22,23)
+    calcEEfinalthree(eventlist)
     printranking(rankevent(eventlist),event)
